@@ -39,15 +39,28 @@ app.get('/',function(req,res){
 
 });
 app.get('/patient',function(req,res){
-  pool.query('select * from tbl_patient',function(err,rows,fields){
-    if(!err){
-      res.send(rows[0]);
-    }
-    else
-    {
-      console.log('Error while performing Query');
-    }
+  pool.getConnection(function(err,connection){
+    var query='select * from tbl_patient';
+    connection.query(query,function(err,rows){
+      if(err){
+        console.log(err);
+        res.status(500).send('500 Error : ' + err);
+      }
+      else
+      {
+        res.status(200).json(rows);
+      }
+    })
   })
+
+})
+app.post('/insertPatient',function(req,res){
+  pool.getConnection(function(err,connection){
+    var query="insert into tbl_patient(Name,LastName,Dateofbirth,Gender,Age, Address,MobileNo,Email,Passwords,PCodel,CreateDate,Problem ) values "+
+        "('" + req.body['Name'] + "','" +req.body['LastName'] + "','"+ req.body['Dateofbirth'] + "','" +req.body['Gender'] + "','" + req.body["Age"] + "','" + req.body["Address"] +
+        "','"+req.body['MobileNo']+"','"+"','"+req.body['Email']+"','"+"','"+req.body['Passwords']+"','"+"','"+req.body['PCodel']+"','"+"','"+req.body['CreateDate']+"','"+"','"+req.body['Problem']+"','"+"')";
+  })
+
 })
 app.get('/admin',function(req,res){
   pool.query("select* from usertypes",function(err,rows,fields){
