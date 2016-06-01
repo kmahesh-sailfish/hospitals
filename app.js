@@ -58,20 +58,20 @@ app.get('/patient',function(req,res){
 })
 
 app.get('/patientid',function(req,res){
-  pool.getConnection(function(err,connection){
-    var query="select * from tbl_patient where PID='"+req.query['PID']+ "'";
-    connection.query(query,function(err,rows){
-      if(err){
-        console.log(err);
-        res.status(500).send('500 Error :'+err);
-      }
-      else
-      {
-        res.status(200).json(rows);
-      }
+  if (req.query['Id']) {
+    pool.getConnection(function (err, connection) {
+      var query = "select * from tbl_patient where PID='" + req.query['PID'] + "'";
+      connection.query(query, function (err, rows) {
+        if (err) {
+          console.log(err);
+          res.status(500).send('500 Error :' + err);
+        }
+        else {
+          res.status(200).json(rows);
+        }
+      })
     })
-  })
-
+  }
 })
 app.post('/insertPatient',function(req,res){
   pool.getConnection(function(err,connection){
