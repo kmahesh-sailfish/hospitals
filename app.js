@@ -44,6 +44,7 @@ app.get('/patient',function(req,res){
   pool.getConnection(function(err,connection){
     var query='select * from tbl_patient';
     connection.query(query,function(err,rows){
+      connection.release();
       if(err){
         console.log(err);
         res.status(500).send('500 Error : ' + err);
@@ -57,11 +58,13 @@ app.get('/patient',function(req,res){
 
 })
 
-app.get('/patientid',function(req,res){
-  if (req.query['PID']) {
+app.get('/patientID',function(req,res){
+  if (req.query.PID) {
+    console.log('id - '+req.query.PID);
     pool.getConnection(function (err, connection) {
-      var query = "select * from tbl_patient where PID='" + req.query['PID'] + "'";
+      var query = "select * from tbl_patient where PID='" +req.query.PID + "'";
       connection.query(query, function (err, rows) {
+        connection.release();
         if (err) {
           console.log(err);
           res.status(500).send('500 Error :' + err);
@@ -71,6 +74,32 @@ app.get('/patientid',function(req,res){
         }
       })
     })
+  }
+  else
+  {
+    console.log("error in PID");
+  }
+})
+app.get('/patientID/:PID',function(req,res){
+  if (req.params.PID) {
+    console.log('id - '+req.params.PID);
+    pool.getConnection(function (err, connection) {
+      var query = "select * from tbl_patient where PID='" +req.params.PID + "'";
+      connection.query(query, function (err, rows) {
+        connection.release();
+        if (err) {
+          console.log(err);
+          res.status(500).send('500 Error :' + err);
+        }
+        else {
+          res.status(200).json(rows);
+        }
+      })
+    })
+  }
+  else
+  {
+    console.log("error in PID");
   }
 })
 app.post('/insertPatient',function(req,res){
@@ -83,6 +112,7 @@ app.post('/insertPatient',function(req,res){
 })
 app.get('/admin',function(req,res){
   pool.query("select* from usertypes",function(err,rows,fields){
+
     if(!err){
       res.send(rows[0]);
     }
