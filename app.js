@@ -58,7 +58,7 @@ app.get('/patient',function(req,res){
 })
 
 app.get('/patientid',function(req,res){
-  if (req.query['Id']) {
+  if (req.query['PID']) {
     pool.getConnection(function (err, connection) {
       var query = "select * from tbl_patient where PID='" + req.query['PID'] + "'";
       connection.query(query, function (err, rows) {
