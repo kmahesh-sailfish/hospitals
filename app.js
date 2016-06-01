@@ -56,6 +56,23 @@ app.get('/patient',function(req,res){
   })
 
 })
+
+app.get('/patientid',function(req,res){
+  pool.getConnection(function(err,connection){
+    var query="select * from tbl_patient where PID='"+req.query['PID']+ "'";
+    connection.query(query,function(err,rows){
+      if(err){
+        console.log(err);
+        res.status(500).send('500 Error :'+err);
+      }
+      else
+      {
+        res.status(200).json(rows);
+      }
+    })
+  })
+
+})
 app.post('/insertPatient',function(req,res){
   pool.getConnection(function(err,connection){
     var query="insert into tbl_patient(Name,LastName,Dateofbirth,Gender,Age, Address,MobileNo,Email,Passwords,PCodel,CreateDate,Problem ) values "+
