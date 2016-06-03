@@ -112,7 +112,7 @@ app.get('/patientID/:PID',function(req,res){
 app.post('/insertPatient',function(req,res){
   try{
 
-    console.log(req.body);
+    //console.log(req.body);
     /*for(var i in req){
      console.log(i);
      }*/
