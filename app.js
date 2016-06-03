@@ -103,11 +103,29 @@ app.get('/patientID/:PID',function(req,res){
   }
 })
 app.post('/insertPatient',function(req,res){
-  pool.getConnection(function(err,connection){
-    var query="insert into tbl_patient(Name,LastName,Dateofbirth,Gender,Age, Address,MobileNo,Email,Passwords,PCodel,CreateDate,Problem ) values "+
-        "('" + req.body['Name'] + "','" +req.body['LastName'] + "','"+ req.body['Dateofbirth'] + "','" +req.body['Gender'] + "','" + req.body["Age"] + "','" + req.body["Address"] +
-        "','"+req.body['MobileNo']+"','"+"','"+req.body['Email']+"','"+"','"+req.body['Passwords']+"','"+"','"+req.body['PCodel']+"','"+"','"+req.body['CreateDate']+"','"+"','"+req.body['Problem']+"','"+"')";
-  })
+  try{
+    pool.getConnection(function(err,connection){
+
+      var query="insert into tbl_patient(Name,LastName,Dateofbirth,Gender,Age,Address,MobileNo,Email,Passwords,PCodel,CreateDate,Problem ) values "+
+          "('" + req.body['Name'] + "','" +req.body['LastName'] + "','"+ req.body['Dateofbirth'] + "','" +req.body['Gender'] + "','" + req.body["Age"] + "','" + req.body["Address"] +
+          "','"+req.body['MobileNo']+"','"+req.body['Email']+"','"+req.body['Passwords']+"','"+req.body['PCodel']+"','"+req.body['CreateDate']+"','"+req.body['Problem']+"')";
+      connection.query(query,function(err,rows){
+
+        if(err){
+          console.log(err);
+          res.status(500).send('500 Error :' + err);
+        }
+        else
+        {
+          res.status(200).json(rows);
+        }
+      })
+    })
+  }
+  catch(exception){
+    res.status(500).send('500 Error :' + exception);
+  }
+
 
 })
 app.get('/admin',function(req,res){
