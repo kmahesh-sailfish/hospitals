@@ -26,13 +26,20 @@ app.set('view engine', 'ejs');
 
 
 app.use(logger('dev'));
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Expose-Headers', 'Authorization, header-a');
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 
 });
@@ -40,7 +47,7 @@ app.get('/',function(req,res){
   res.send('welcome to Api exprees..');
 
 });
-app.get('/patient',function(req,res){
+app.get('/patient', bodyParser.json(),function(req,res){
   pool.getConnection(function(err,connection){
     var query='select * from tbl_patient';
     connection.query(query,function(err,rows){
@@ -104,11 +111,17 @@ app.get('/patientID/:PID',function(req,res){
 })
 app.post('/insertPatient',function(req,res){
   try{
+
+    console.log(req.body);
+    /*for(var i in req){
+     console.log(i);
+     }*/
     pool.getConnection(function(err,connection){
 
       var query="insert into tbl_patient(Name,LastName,Dateofbirth,Gender,Age,Address,MobileNo,Email,Passwords,PCodel,CreateDate,Problem ) values "+
           "('" + req.body['Name'] + "','" +req.body['LastName'] + "','"+ req.body['Dateofbirth'] + "','" +req.body['Gender'] + "','" + req.body["Age"] + "','" + req.body["Address"] +
           "','"+req.body['MobileNo']+"','"+req.body['Email']+"','"+req.body['Passwords']+"','"+req.body['PCodel']+"','"+req.body['CreateDate']+"','"+req.body['Problem']+"')";
+      console.log(query);
       connection.query(query,function(err,rows){
 
         if(err){
